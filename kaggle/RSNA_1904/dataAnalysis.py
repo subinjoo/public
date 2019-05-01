@@ -19,7 +19,7 @@ import numpy as np
 dataDir='.\stage_2_train_images' # dicom folder
 onlyfiles = [f for f in listdir(dataDir) if isfile(join(dataDir, f))]
 
-# step2: laod csv file
+# step2: load csv file
 dataDir_csv='stage_2_train_labels.csv' # csv file
 listId,listLabel = [],[]
 with open(dataDir_csv) as csv_file:

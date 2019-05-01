@@ -79,7 +79,7 @@ class MouseAction:
 # GUI class
 class Main(QWidget,MouseAction,Dicom):
     def __init__(self):
-        super().__init__() # 부모 init 가져옴
+        super().__init__() 
         
         # initial parameter
         self.isFirstOpen=True

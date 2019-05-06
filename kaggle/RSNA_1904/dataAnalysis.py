@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Wed May  1 2019
+Created on Wed May 1 2019
 @author: Subin Joo
 reference https://www.kaggle.com/c/rsna-pneumonia-detection-challenge/overview
 """
@@ -33,12 +33,12 @@ labels=[]
 patientAge_normal,patientAge_abnormal=[0]*10,[0]*10
 patientSex_normal,patientSex_abnormal=[0,0],[0,0]
 for oneFile in onlyfiles:
-    filename= dataDir + '\\' + oneFile
+    filename= dataDir + '/' + oneFile
     dataset = pydicom.dcmread(filename) # read dicom file
     labels.append(int(listLabel[listId.index(oneFile[:-4])])) # label list
     
     # relate with age, gender
-    age = int(int(dataset.PatientAge)/10) # 십의 자리, check 10-digit of age
+    age = int(int(dataset.PatientAge)/10) # check 10-digit of age
     gender = dataset.PatientSex # gender of patient
     
     try:

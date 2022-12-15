@@ -681,7 +681,15 @@ callbacks_list = [
 (train_dataset, val_dataset), dataset_info = tfds.load(
     "coco/2017", split=["train", "validation"], with_info=True, data_dir="data"
 )
-
+"""
+## train_dataset data type
+<ParallelMapDataset shapes: ((None, None, 3), (None, 4), (None,)), types: (tf.float32, tf.float32, tf.int32)>
+<ShuffleDataset shapes: ((None, None, 3), (None, 4), (None,)), types: (tf.float32, tf.float32, tf.int32)>
+<PaddedBatchDataset shapes: ((2, None, None, 3), (2, None, 4), (2, None)), types: (tf.float32, tf.float32, tf.int32)>
+<ParallelMapDataset shapes: ((2, None, None, 3), (None, None, 5)), types: (tf.float32, tf.float32)>
+<_IgnoreErrorsDataset shapes: ((2, None, None, 3), (None, None, 5)), types: (tf.float32, tf.float32)>
+<PrefetchDataset shapes: ((2, None, None, 3), (None, None, 5)), types: (tf.float32, tf.float32)>
+"""
 autotune = tf.data.AUTOTUNE
 train_dataset = train_dataset.map(preprocess_data, num_parallel_calls=autotune)
 train_dataset = train_dataset.shuffle(8 * batch_size)
@@ -703,6 +711,7 @@ val_dataset = val_dataset.apply(tf.data.experimental.ignore_errors())
 val_dataset = val_dataset.prefetch(autotune)
 
 print('end')
+
 """
 ## Training the model
 """
@@ -750,7 +759,6 @@ inference_model = tf.keras.Model(inputs=image, outputs=detections)
 """
 ## Generating detections
 """
-
 
 def prepare_image(image):
     image, _, ratio = resize_and_pad_image(image, jitter=None)

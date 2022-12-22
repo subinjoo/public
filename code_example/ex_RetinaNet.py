@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 import tensorflow_datasets as tfds
 
 import random
+import time
 
 url = "https://github.com/srihari-humbarwadi/datasets/releases/download/v0.1.0/data.zip"
 filename = os.path.join(os.getcwd(), "data.zip")
@@ -124,7 +125,7 @@ def visualize_detections(
             clip_on=True,
         )
     plt.show()
-    plt.savefig(str(int(random.random()*1000))+'_test.jpg')
+    plt.savefig(time.strftime("%y%m%d_%H%M%S")+'_result.jpg')
     return ax
 
 ####
@@ -709,7 +710,8 @@ model.compile(loss=loss_fn, optimizer=optimizer)
 ####
 callbacks_list = [
     tf.keras.callbacks.ModelCheckpoint(
-        filepath=os.path.join(model_dir, "weights" + "_epoch_{epoch}"),
+        #filepath=os.path.join(model_dir, "weights" + "_epoch_{epoch}"),
+        filepath=os.path.join(model_dir, "weights" + "_epoch_"),
         monitor="loss",
         save_best_only=False,
         save_weights_only=True,

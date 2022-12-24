@@ -3,6 +3,7 @@
 Created on Mon Dec 12 10:17:11 2022
 @author: Subin
 https://keras.io/examples/vision/retinanet/
+CUDA_VISIBLE_DEVICES=0 python3 ex_RetinaNet.py
 """
 import os
 import re
@@ -769,7 +770,8 @@ model.fit(
 
 ####
 # Change this to `model_dir` when not using the downloaded weights
-weights_dir = "data"
+#weights_dir = "data"
+weights_dir = "retinanet"
 
 latest_checkpoint = tf.train.latest_checkpoint(weights_dir)
 model.load_weights(latest_checkpoint)

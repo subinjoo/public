@@ -3,7 +3,7 @@
 Created on Mon Dec 12 10:17:11 2022
 @author: Subin
 https://keras.io/examples/vision/retinanet/
-CUDA_VISIBLE_DEVICES=0 python3 ex_RetinaNet.py
+CUDA_VISIBLE_DEVICES=0 nohup python3 ex_RetinaNet.py
 """
 import os
 import re
@@ -18,6 +18,7 @@ import tensorflow_datasets as tfds
 
 import random
 import time
+from datetime import datetime
 
 url = "https://github.com/srihari-humbarwadi/datasets/releases/download/v0.1.0/data.zip"
 filename = os.path.join(os.getcwd(), "data.zip")
@@ -126,7 +127,8 @@ def visualize_detections(
             clip_on=True,
         )
     plt.show()
-    plt.savefig(time.strftime("%y%m%d_%H%M%S")+'_result.jpg')
+    t = datetime.utcnow().strftime('%Y%m%d_%H%M%S%f')[:-3]
+    plt.savefig(t + '_result.jpg')
     return ax
 
 ####
@@ -723,7 +725,8 @@ callbacks_list = [
 ####
 (train_dataset, val_dataset), dataset_info = tfds.load(
     "coco/2017", split=["train", "validation"], with_info=True, data_dir="data"
-)
+) # len(train_dataset) : 118287 / len(val_dataset) : 5000
+
 
 ####
 autotune = tf.data.AUTOTUNE
@@ -748,24 +751,24 @@ val_dataset = val_dataset.prefetch(autotune)
 
 ####
 # Uncomment the following lines, when training on full dataset
-# train_steps_per_epoch = dataset_info.splits["train"].num_examples // batch_size
-# val_steps_per_epoch = \
+#train_steps_per_epoch = dataset_info.splits["train"].num_examples // batch_size
+#val_steps_per_epoch = \
 #     dataset_info.splits["validation"].num_examples // batch_size
 
-# train_steps = 4 * 100000
-# epochs = train_steps // train_steps_per_epoch
+#train_steps = 4 * 100000
+#epochs = train_steps // train_steps_per_epoch
 
-epochs = 1
+epochs = 200
 
 # Running 100 training and 50 validation steps,
 # remove `.take` when training on the full dataset
 
 model.fit(
     train_dataset.take(100),
-    validation_data=val_dataset.take(50),
+    validation_data=train_dataset.take(100),
     epochs=epochs,
     callbacks=callbacks_list,
-    verbose=1,
+    verbose=2,
 )
 
 ####
@@ -788,10 +791,11 @@ def prepare_image(image):
     return tf.expand_dims(image, axis=0), ratio
 
 
-val_dataset = tfds.load("coco/2017", split="validation", data_dir="data")
+#val_dataset = tfds.load("coco/2017", split="validation", data_dir="data")
+val_dataset = tfds.load("coco/2017", split="train", data_dir="data")
 int2str = dataset_info.features["objects"]["label"].int2str
 
-for sample in val_dataset.take(2):
+for sample in val_dataset.take(5):
     image = tf.cast(sample["image"], dtype=tf.float32)
     input_image, ratio = prepare_image(image)
     detections = inference_model.predict(input_image)

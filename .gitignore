@@ -1,4 +1,6 @@
 code_example/data.zip
 code_example/data
+code_example/images
+code_example/annotations
 code_example/retinanet
 *.jpg

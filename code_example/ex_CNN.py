@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Feb 13 10:38:16 2023
+Created on Mon Feb 13 2023
 @author: subinJoo
-https://keras.io/examples/vision/mnist_convnet/
+reference : https://keras.io/examples/vision/mnist_convnet/
 """
 import numpy as np
 from tensorflow import keras
@@ -49,6 +49,7 @@ model.summary()
 from tensorflow.keras.optimizers import Adam
 optimizer = Adam(learning_rate=0.001, clipnorm=0.1)
 
+# create training function
 def training(inputs,outputs):
     model_params = model.trainable_variables
     with tf.GradientTape() as tape:
@@ -60,20 +61,32 @@ def training(inputs,outputs):
     optimizer.apply_gradients(zip(grads, model_params))
     return np.mean(loss)
 
+    
+""" training part
+"""
 batch_size = 128
-epoch = 2000
+epoch = 10000
+list_loss = []
 for i in range(epoch):
     batch = random.sample(list(range(len(x_train))),batch_size)    
     inputs = x_train[batch,:,:,:]
     outputs = y_train[batch,:]
     loss = training(inputs,outputs)
-    print('epoch ',i,' / loss : ',loss)
-    
-    
+    if(i%10 == 0):
+        print('epoch ' ,i,' / loss : ',loss)
+        list_loss.append(loss)
+
+# plot loss value per epoch    
+import matplotlib.pyplot as plt
+plt.plot(list_loss)
+
 """ validation part
 """
+batch = random.sample(list(range(len(x_test))),batch_size)    
+inputs = x_test[batch,:,:,:]
+outputs = y_test[batch,:]
+predicts_test = model(inputs)
     
-
-
-
+acc = np.sum(tf.math.argmax(predicts_test,axis=1) == tf.math.argmax(outputs,axis=1))/batch_size * 100
+print('validation accuracy (%) : ',acc)
 
